@@ -50,22 +50,52 @@
       <div class="section section-one">
         <!-- 公共头部组件 -->
         <div class="main-header-wrapper">
-          <div>
+          <el-menu :default-active="activeIndex"
+                   class="navBar"
+                   mode="horizontal"
+                   @select="handleSelect"
+                   background-color="#0C0F16"
+                   text-color="#999999"
+                   active-text-color="#ddd"
+                   style="border: none;">
             <router-link to="/">
               <img class="logo"
                    src="@/assets/img/logo1.png" />
             </router-link>
-          </div>
-          <div>
+            <el-menu-item index="1">首页</el-menu-item>
+            <el-submenu index="2">
+              <template slot="title">产品与服务</template>
+              <el-submenu index="2-1">
+                <template slot="title">统一资源预约平台</template>
+                <el-menu-item index="2-2-1">门诊号源管理系统</el-menu-item>
+                <el-menu-item index="2-2-2">医技预约管理系统</el-menu-item>
+                <el-menu-item index="2-2-3">床位预约管理系统</el-menu-item>
+                <el-menu-item index="2-2-4">治疗预约管理系统</el-menu-item>
+                <el-menu-item index="2-2-5">手术预约管理系统</el-menu-item>
+              </el-submenu>
+              <el-menu-item index="2-2">互联网医院</el-menu-item>
+            </el-submenu>
+            <el-menu-item index="3">案例中心</el-menu-item>
+            <el-submenu index="4">
+              <template slot="title">新闻中心</template>
+              <el-menu-item index="4-1">百慧动态</el-menu-item>
+              <el-menu-item index="4-2">会议资讯</el-menu-item>
+            </el-submenu>
+            <el-submenu index="5">
+              <template slot="title">关于百慧</template>
+              <el-menu-item index="5-1">企业概述</el-menu-item>
+              <el-menu-item index="5-2">人才招聘</el-menu-item>
+            </el-submenu>
+            <el-menu-item index="6">联系我们</el-menu-item>
             <el-input class="search"
                       placeholder="搜索"
-                      size="medium">
+                      size="mini">
               <el-button type="text"
                          slot="append"
                          icon="el-icon-search"
-                         size="medium"></el-button>
+                         size="mini"></el-button>
             </el-input>
-          </div>
+          </el-menu>
         </div>
         <!-- sectionone 的内容 -->
         <el-carousel :height="pageHeight+'px'"
@@ -80,30 +110,6 @@
             </div>
           </el-carousel-item>
         </el-carousel>
-        <div class="section-one-bottom">
-          <div class="bottom-content">
-            <div class="title">《中国数字医学》</div>
-            <div class="des">医疗信息化权威杂志刊登百慧科技...</div>
-            <!-- <div class="line"></div> -->
-          </div>
-          <div class="line"></div>
-          <div class="bottom-content">
-            <div class="title">广妇儿互联网医院</div>
-            <div class="des">日前，针对新冠疫情期间互联网线...</div>
-            <!-- <div class="line"></div> -->
-          </div>
-          <div class="line"></div>
-          <div class="bottom-content">
-            <div class="title">战“疫”火力全开</div>
-            <div class="des">百慧科技互联网医战“疫”火力全开！</div>
-            <!-- <div class="line"></div> -->
-          </div>
-          <div class="line"></div>
-          <div class="bottom-content">
-            <div class="title">联通优秀合作伙伴</div>
-            <div class="des">携手扬帆再启航｜我司荣获联通...</div>
-          </div>
-        </div>
       </div>
       <div class="section section-two">
         <div class="hosImg">
@@ -121,13 +127,14 @@
       </div>
       <div class="section section-three">
         <ul class="resourseList"
-            @mouseover="toggleShow(-1, true)">
+            @mouseover="toggleShow(-1, true)"
+            @mouseout="toggleShow(-1, false)">
           <li @mouseenter="toggleShow(index, true)"
-              @mouseout="toggleShow(-1, false)"
+              @mouseout="toggleShow(index, false)"
               v-for="(item, index) in resourseList"
               :key="index">
             {{item.label}}
-            <span>{{item.translation}}</span>
+            <span v-if="item.show">{{item.translation}}</span>
             <!-- <el-link :underline="false">了解更多</el-link> -->
           </li>
         </ul>
@@ -141,10 +148,10 @@
             <i class="el-icon-arrow-right" />
           </el-link>
         </div>
-        <div class="resourseImg">
-          <transition name="smallAndBig">
-            <img v-show="detail"
-                 :src="require('@/assets/img/resource' + index + '.png')" />
+        <div class="resourseImg"
+             v-show="detail">
+          <transition name="el-fade-in">
+            <img :src="require('@/assets/img/resource' + index + '.png')" />
           </transition>
         </div>
       </div>
@@ -343,7 +350,7 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang='scss' >
 .homePage {
   height: 100%;
 }
@@ -359,30 +366,47 @@ export default {
   opacity: 0.5 !important;
 }
 .section-one {
-  .main-header-wrapper {
-    width: 100%;
-    padding: 0 15%;
-    min-width: 1140px;
-    box-sizing: border-box;
+  .home-carousel {
+    height: 100%;
+    .el-carousel__container {
+      height: 100%;
+      .bg-item-box {
+        height: 100%;
+        background: url("../../assets/img/byway1.png") no-repeat;
+        background-size: cover;
+        background-position: center 0;
+        background-size: cover;
+        -webkit-background-size: cover; /* 兼容Webkit内核浏览器如Chrome和Safari */
+        -o-background-size: cover; /* 兼容Opera */
+      }
+    }
+  }
+
+  .el-menu {
+    z-index: 999;
     position: fixed;
-    z-index: 3000;
-    top: 0;
-    left: 0;
-    background: #0c0f16;
-    height: 100px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #fff;
-    font-size: 30px;
+    width: 100%;
+    // text-align: center;
+    // padding: 0 10%;
+    .is-active,
+    .el-submenu__title {
+      border: none !important;
+    }
+    .el-menu-item {
+      width: 100px;
+      font-size: 14px;
+      font-family: PingFang SC;
+      font-weight: 500;
+    }
     .logo {
-      width: 182px;
-      
+      width: 130px;
+      margin: 16px 4% 0px 10%;
+      float: left;
+      display: block;
     }
     .search {
       width: 200px;
-     
-      text-align: right;
+      margin: 16px 10% 0px 2%;
       .el-input__inner {
         background-color: #10141e;
         border-radius: 4px;
@@ -407,60 +431,6 @@ export default {
       }
     }
   }
-
-  .home-carousel {
-    height: calc(100% - 90px);
-    .el-carousel__container {
-      height: 100%;
-      .bg-item-box {
-        height: 100%;
-        background: url("../../assets/img/byway1.png") no-repeat;
-        background-size: cover;
-        background-position: center 0;
-        background-size: cover;
-        -webkit-background-size: cover; /* 兼容Webkit内核浏览器如Chrome和Safari */
-        -o-background-size: cover; /* 兼容Opera */
-      }
-    }
-  }
-  .section-one-bottom {
-    width: 100%;
-    height: 90px;
-    box-sizing: border-box;
-    padding: 0 15%;
-
-    background: #020b31;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .bottom-content {
-      width: 230px;
-      overflow: hidden;
-      min-width: 166px;
-      position: relative;
-      .title {
-        color: #fff;
-        font-size: 18px;
-        font-weight: bold;
-      }
-      .des {
-        margin-top: 6px;
-        color: #fff;
-        font-size: 14px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      .line {
-      }
-    }
-    .line {
-      width: 1px;
-      height: 30px;
-      background: #fff;
-      margin: 0 30px;
-    }
-  }
   .bannerImg {
     width: 100%;
     background-size: 100% 100%;
@@ -471,7 +441,6 @@ export default {
   background-repeat: no-repeat;
   background-size: 100% 100%;
   padding: 0 15%;
-  min-width: 1140px;
   // fullpage自带类名
   .fp-tableCell {
     display: flex;
@@ -525,7 +494,6 @@ export default {
   background-image: url("../../assets/img/background2.png");
   background-size: 100% 100%;
   padding: 0 15%;
-  min-width: 1140px;
   // fullpage自带类名
   .fp-tableCell {
     display: flex;
@@ -590,7 +558,6 @@ export default {
       padding: 6px 14px;
     }
     li span {
-      display: none;
       font-size: 8px;
     }
     li .el-link {
@@ -605,31 +572,21 @@ export default {
       background: none;
     }
     li:hover {
-      animation: paddingAni 0.3s linear;
       width: fit-content;
       // position: absolute;
       // right: 0;
       cursor: pointer;
       background: linear-gradient(
-        to right,
-        rgba(1, 218, 185, 1),
-        rgba(1, 159, 232, 1)
+        180deg,
+        rgba(1, 218, 185, 1) 0%,
+        rgba(1, 159, 232, 1) 100%
       );
-      // background: linear-gradient(
-      //   180deg,
-      //   rgba(1, 218, 185, 1) 0%,
-      //   rgba(1, 159, 232, 1) 100%
-      // );
       border-radius: 4px;
-    }
-    li:hover > span {
-      display: inline;
     }
   }
 }
 .section-four {
   padding: 2% 15%;
-  min-width: 1140px;
   // fullpage自带类名
   .fp-tableCell {
     display: flex;
@@ -691,7 +648,6 @@ export default {
           background-color: #fff;
           padding: 10px 16px 16px 16px;
           .msgTitle {
-            min-height: 48px;
             font-size: 14px;
             font-family: PingFang SC;
             font-weight: bold;
@@ -721,7 +677,6 @@ export default {
 }
 .section-five {
   padding: 2% 15%;
-  min-width: 1140px;
   // fullpage自带类名
   .fp-tableCell {
     display: flex;
@@ -808,32 +763,5 @@ export default {
 }
 .fp-auto-height {
   height: 240px !important;
-}
-
-.smallAndBig-enter-active {
-  animation: scaleAni 0.3s ease-in-out;
-}
-@keyframes paddingAni {
-  0% {
-    padding: 6px 0px 6px 14px;
-  }
-  100% {
-    padding: 6px 14px;
-    // padding: 6px 14px;
-  }
-}
-@keyframes scaleAni {
-  0% {
-    transform: scale(0.8);
-  }
-  50% {
-    transform: scale(1);
-  }
-  90% {
-    transform: scale(0.9);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 </style>
