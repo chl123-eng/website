@@ -4,7 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import Router from 'vue-router'
-import { Menu, MenuItem, Submenu, Carousel, CarouselItem, Link, Input, Button } from 'element-ui'
+import { Menu, MenuItem, Submenu, Carousel, CarouselItem,CollapseTransition, Link, Input, Button } from 'element-ui'
+import './assets/css/reset.css'
 import 'element-ui/lib/theme-chalk/index.css';
 import 'font-awesome/css/font-awesome.min.css'
 import VueFullPage from 'vue-fullpage.js' // 插件2
@@ -22,6 +23,7 @@ Vue.use(Link);
 Vue.use(Input);
 Vue.use(Button);
 Vue.use(Router)
+Vue.component(CollapseTransition.name, CollapseTransition)
 
 Vue.use(VueFullPage);
 

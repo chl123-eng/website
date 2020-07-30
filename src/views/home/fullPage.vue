@@ -49,14 +49,110 @@
                :options="options">
       <div class="section section-one">
         <!-- 公共头部组件 -->
-        <div class="main-header-wrapper">
-          <div>
-            <router-link to="/">
-              <img class="logo"
-                   src="@/assets/img/logo1.png" />
-            </router-link>
+        <div class="main-header-wrapper"
+             @mouseleave.self="leaveLiTab('')">
+          <div class="main-left">
+
+            <img class="logo"
+                 src="@/assets/img/logo1.png" />
+
           </div>
-          <div>
+          <div class="main-title">
+            <div class="title-box">
+              <span class="title-span">首页</span>
+
+            </div>
+            <div class="title-box">
+
+              <span :class="[
+                            'title-span',
+                            {'now-title-span':activeName=='产品与服务'}
+                            ]"
+                    @mouseenter="showLiTab('产品与服务')">
+                产品与服务
+                <i class="el-icon-arrow-down"></i>
+              </span>
+              <el-collapse-transition>
+                <ul class="title-ul"
+                    v-show="activeName=='产品与服务'"
+                    @mouseenter="showLiTab('产品与服务')"
+                    @mouseleave="leaveLiTab('产品与服务')">
+                  <li>统一资源预约平台</li>
+                  <li>互联网医院</li>
+                </ul>
+              </el-collapse-transition>
+
+            </div>
+            <div class="title-box">
+
+              <span :class="[
+                            'title-span',
+                            {'now-title-span':activeName=='案例中心'}
+                            ]"
+                    @mouseenter="showLiTab('案例中心')">
+                案例中心
+                <i class="el-icon-arrow-down"></i>
+              </span>
+              <el-collapse-transition>
+                <ul class="title-ul"
+                    v-show="activeName=='案例中心'"
+                    @mouseenter="showLiTab('案例中心')"
+                    @mouseleave="leaveLiTab('案例中心')">
+                  <li>门诊预约管理系统</li>
+                  <li>医技预约管理系统</li>
+                  <li>治疗预约管理系统</li>
+                  <li>床位预约管理系统</li>
+                  <li>手术预约管理系统</li>
+                </ul>
+              </el-collapse-transition>
+
+            </div>
+            <div class="title-box">
+
+              <span :class="[
+                            'title-span',
+                            {'now-title-span':activeName=='新闻中心'}
+                            ]"
+                    @mouseenter="showLiTab('新闻中心')">
+                新闻中心
+                <i class="el-icon-arrow-down"></i>
+              </span>
+              <el-collapse-transition>
+                <ul class="title-ul"
+                    v-show="activeName=='新闻中心'"
+                    @mouseenter="showLiTab('新闻中心')"
+                    @mouseleave="leaveLiTab('新闻中心')">
+                  <li>百慧动态</li>
+                  <li>会议资讯</li>
+                </ul>
+              </el-collapse-transition>
+
+            </div>
+            <div class="title-box">
+
+              <span :class="[
+              'title-span',
+              {'now-title-span':activeName=='关于百惠'}
+              ]"
+                    @mouseenter="showLiTab('关于百惠')">
+                关于百惠
+                <i class="el-icon-arrow-down"></i>
+              </span>
+              <el-collapse-transition>
+                <ul class="title-ul"
+                    v-show="activeName=='关于百惠'"
+                    @mouseenter="showLiTab('关于百惠')"
+                    @mouseleave="leaveLiTab('关于百惠')">
+                  <li>企业概况</li>
+                  <li>人才招聘</li>
+                </ul>
+              </el-collapse-transition>
+            </div>
+            <div class="title-box">
+              <span class="title-span">联系我们</span>
+            </div>
+          </div>
+          <div class="main-right">
             <el-input class="search"
                       placeholder="搜索"
                       size="medium">
@@ -68,8 +164,7 @@
           </div>
         </div>
         <!-- sectionone 的内容 -->
-        <el-carousel :height="pageHeight+'px'"
-                     class="home-carousel"
+        <el-carousel class="home-carousel"
                      :autoplay='false'
                      :arrow="'never'"
                      :indicator-position="'none'">
@@ -120,10 +215,10 @@
         </div>
       </div>
       <div class="section section-three">
-        <ul class="resourseList"
-            @mouseover="toggleShow(-1, true)">
+        <ul class="resourseList" @mouseenter="toggleShow(index, true)"
+              @mouseleave="toggleShow(-2, false)">
           <li @mouseenter="toggleShow(index, true)"
-              @mouseout="toggleShow(-1, false)"
+              @mouseleave="toggleShow(-2, true)"
               v-for="(item, index) in resourseList"
               :key="index">
             {{item.label}}
@@ -143,7 +238,7 @@
         </div>
         <div class="resourseImg">
           <transition name="smallAndBig">
-            <img v-show="detail"
+            <img v-show="detail && activeIndex == index"
                  :src="require('@/assets/img/resource' + index + '.png')" />
           </transition>
         </div>
@@ -204,8 +299,10 @@
           </div>
         </div>
       </div>
+
       <div class="section section-five fp-auto-height"
            ref="content">
+
         <div class="message">
           <img src="@/assets/img/logo1.png" />
           <p class="title">广东百慧科技有限公司</p>
@@ -243,8 +340,10 @@
           <img src="@/assets/img/code.jpg" />
           <p class="codeWord">百慧科技官方微信</p>
         </div>
+
         <div class="copyright">Copyright © www.gdbyway.com, All Rights Reserved.</div>
       </div>
+
     </full-page>
   </div>
 </template>
@@ -254,8 +353,9 @@ import $ from "jquery";
 export default {
   data () {
     return {
-      pageHeight: '1000px',
-      activeIndex: "1",
+      lock:true,
+      activeName: '',
+      activeIndex: "",
       detail: false,
       index: 1,
       resourseList: [
@@ -296,9 +396,16 @@ export default {
 
   },
   methods: {
-    getPageHeight () {
-      let height = document.documentElement.offsetHeight
-      this.pageHeight = height - 60
+    haha (value) {
+      console.log(value);
+    },
+    showLiTab (value) {
+      if (value == this.activeName) return
+      this.activeName = value
+    },
+    leaveLiTab () {
+      console.log('likaila');
+      this.activeName = ''
     },
     handleSelect (key, keyPath) {
       console.log(key, keyPath);
@@ -320,11 +427,15 @@ export default {
       }
     },
     toggleShow (index, type) {
-      if (index === -1) {
-        this.detail = type;
+      console.log(index);
+       this.detail = type;
+      if (index === -2) {
+        this.activeIndex = ''
       } else {
+        this.activeIndex = index + 1
         // this.detail = !this.detail
         this.index = index + 1;
+
         this.resourseList[index].show = type;
       }
     },
@@ -337,8 +448,8 @@ export default {
       $(this.$refs.content).stop().fadeToggle();
     }
   },
-  computed: {
-
+  watch: {
+ 
   },
 };
 </script>
@@ -375,34 +486,108 @@ export default {
     align-items: center;
     color: #fff;
     font-size: 30px;
-    .logo {
-      width: 182px;
-      
-    }
-    .search {
-      width: 200px;
-     
-      text-align: right;
-      .el-input__inner {
-        background-color: #10141e;
-        border-radius: 4px;
-        border: none;
+    .main-left {
+      height: 40px;
+      line-height: 40px;
+      .logo {
+        width: 182px;
+        height: 40px;
       }
-      .el-input-group__append {
-        background-color: #10141e;
-        border: none;
-        font-size: 16px;
-        .el-button {
-          border-left: 1px solid #999999;
-          border-radius: 0;
-          height: 4px;
-          padding-left: 10px;
-          position: relative;
-          top: 8px;
+    }
+    .main-title {
+      min-width: 538px;
+      height: 40px;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
+      .title-box {
+        flex: 1;
+        font-size: 14px;
+        position: relative;
+
+        .faker-box {
+          // position: absolute;
+          // background: red;
+          // opacity: 0.4;
+          // top: 0;
+          // height: 65px;
+          // width: 90px;
+          // left: 50%;
+          // transform: translateX(-50%);
         }
-        .el-icon-search {
-          position: relative;
-          top: -8px;
+        .title-span {
+          color: #999;
+          cursor: pointer;
+          font-weight: 500;
+        }
+        .title-span.now-title-span {
+          color: #fff;
+        }
+        .title-span.now-title-span i {
+          transform: rotate(180deg); /*旋转180度*/
+        }
+        .title-span.now-title-span i {
+          transition: transform 0.5s ease 0s; /*all是所有属性都将获得动画效果  0.5秒完成动画 ease(逐渐变慢)*/
+        }
+        .title-span i {
+          transition: transform 0.5s ease 0s; /*all是所有属性都将获得动画效果  0.5秒完成动画 ease(逐渐变慢)*/
+        }
+
+        .title-ul {
+          margin-top: 60px;
+          position: absolute;
+          top: 0px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #0c0f16;
+          li {
+            margin-top: 6px;
+            min-width: 100px;
+            padding: 0 10px;
+            display: inline-block;
+            height: 34px;
+            text-align: center;
+            line-height: 34px;
+            font-size: 10px;
+            cursor: pointer;
+          }
+          li:hover {
+            background: #001c3b;
+          }
+        }
+      }
+    }
+    .main-right {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      .search {
+        width: 200px;
+
+        text-align: right;
+        .el-input__inner {
+          background-color: #10141e;
+          border-radius: 4px;
+          border: none;
+        }
+        .el-input-group__append {
+          background-color: #10141e;
+          border: none;
+          font-size: 16px;
+          .el-button {
+            border-left: 1px solid #999999;
+            border-radius: 0;
+            height: 4px;
+            padding-left: 10px;
+            position: relative;
+            top: 8px;
+          }
+          .el-icon-search {
+            position: relative;
+            top: -8px;
+          }
         }
       }
     }
@@ -574,7 +759,8 @@ export default {
     }
   }
   .resourseList {
-    display: block;
+    width: 700px;
+    display: inline-block;
     list-style: none;
     margin: auto 0;
     // text-align: right;
@@ -584,7 +770,7 @@ export default {
     line-height: 24px;
     color: #fff;
     li {
-      width: 450px;
+     width: 100%;
       height: 24px;
       margin: 6px 0;
       padding: 6px 14px;
@@ -812,6 +998,14 @@ export default {
 
 .smallAndBig-enter-active {
   animation: scaleAni 0.3s ease-in-out;
+}
+@keyframes rotateAni {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(-180deg);
+  }
 }
 @keyframes paddingAni {
   0% {
