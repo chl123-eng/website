@@ -215,13 +215,15 @@
         </div>
       </div>
       <div class="section section-three">
-        <ul class="resourseList" @mouseenter="toggleShow(index, true)"
-              @mouseleave="toggleShow(-2, false)">
+        <ul class="resourseList"
+            @mouseenter="toggleShow(index, true)"
+            @mouseleave="toggleShow(-2, false)">
           <li @mouseenter="toggleShow(index, true)"
               @mouseleave="toggleShow(-2, true)"
               v-for="(item, index) in resourseList"
               :key="index">
             {{item.label}}
+            <span class="faker-bg"></span>
             <span>{{item.translation}}</span>
             <!-- <el-link :underline="false">了解更多</el-link> -->
           </li>
@@ -236,7 +238,7 @@
             <i class="el-icon-arrow-right" />
           </el-link>
         </div>
-        <div class="resourseImg">
+        <div class="resourseImg" v-show="detail && activeIndex == index">
           <transition name="smallAndBig">
             <img v-show="detail && activeIndex == index"
                  :src="require('@/assets/img/resource' + index + '.png')" />
@@ -353,7 +355,7 @@ import $ from "jquery";
 export default {
   data () {
     return {
-      lock:true,
+      lock: true,
       activeName: '',
       activeIndex: "",
       detail: false,
@@ -428,7 +430,7 @@ export default {
     },
     toggleShow (index, type) {
       console.log(index);
-       this.detail = type;
+      this.detail = type;
       if (index === -2) {
         this.activeIndex = ''
       } else {
@@ -449,7 +451,7 @@ export default {
     }
   },
   watch: {
- 
+
   },
 };
 </script>
@@ -770,10 +772,14 @@ export default {
     line-height: 24px;
     color: #fff;
     li {
-     width: 100%;
+      width: fit-content;
       height: 24px;
       margin: 6px 0;
-      padding: 6px 14px;
+      padding: 6px 10px;
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+      border-radius: 4px;
     }
     li span {
       display: none;
@@ -790,23 +796,24 @@ export default {
     li .el-link:hover {
       background: none;
     }
-    li:hover {
-      animation: paddingAni 0.3s linear;
-      width: fit-content;
-      // position: absolute;
-      // right: 0;
+    .faker-bg {
+      // display: inline-block;
+      width: 0;
+      padding: 0 16px;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      position: absolute;
+      opacity: 1;
+      z-index: -1;
       cursor: pointer;
-      background: linear-gradient(
-        to right,
-        rgba(1, 218, 185, 1),
-        rgba(1, 159, 232, 1)
-      );
-      // background: linear-gradient(
-      //   180deg,
-      //   rgba(1, 218, 185, 1) 0%,
-      //   rgba(1, 159, 232, 1) 100%
-      // );
-      border-radius: 4px;
+    }
+    li:hover .faker-bg {
+      animation: paddingAni 0.8s ease forwards;
+    }
+    li:hover {
+      width: fit-content;
+      cursor: pointer;
     }
     li:hover > span {
       display: inline;
@@ -997,7 +1004,7 @@ export default {
 }
 
 .smallAndBig-enter-active {
-  animation: scaleAni 0.3s ease-in-out;
+  animation: scaleAni 0.8s ease-in-out;
 }
 @keyframes rotateAni {
   0% {
@@ -1007,12 +1014,27 @@ export default {
     transform: rotate(-180deg);
   }
 }
+
 @keyframes paddingAni {
   0% {
-    padding: 6px 0px 6px 14px;
+    width: 0%;
+     background: linear-gradient(
+      180deg,
+      rgba(1, 218, 185, 1) 0%,
+      rgba(1, 159, 232, 1) 100%
+    );
+    //  background: none;
+
+    // padding: 6px 0px 6px 14px;
   }
   100% {
-    padding: 6px 14px;
+    width: 100%;
+    background: linear-gradient(
+      180deg,
+      rgba(1, 218, 185, 1) 0%,
+      rgba(1, 159, 232, 1) 100%
+    );
+    // padding: 6px 14px;
     // padding: 6px 14px;
   }
 }
